@@ -42,23 +42,26 @@ function runPreloader() {
   const pageLoaded = new Promise((r) => (document.readyState === 'complete' ? r() : window.addEventListener('load', r, { once: true })));
   const minimum = new Promise((r) => setTimeout(r, 2200));
   const counter = { value: 0 };
+  const render = () => {
+    count.textContent = String(Math.round(counter.value)).padStart(2, '0');
+    gsap.set(bar, { scaleX: counter.value / 100 });
+  };
 
   return new Promise((resolve) => {
     gsap.from(logo, { scale: 0.6, opacity: 0, duration: 1.4, ease: 'expo.out' });
     gsap.from(tag, { yPercent: 110, duration: 1.2, delay: 0.3, ease: 'expo.out' });
-    const climb = gsap.to(counter, {
-      value: 86,
-      duration: 2,
-      ease: 'power2.inOut',
-      onUpdate: () => {
-        count.textContent = String(Math.round(counter.value)).padStart(2, '0');
-        gsap.set(bar, { scaleX: counter.value / 100 });
-      },
-    });
+    // Keeps creeping toward (never reaching) 100 while we wait, so there is no visible stall
+    // before the final run to 100 — whatever the network does.
+    const startedAt = gsap.ticker.time;
+    const climb = () => {
+      counter.value = 99 * (1 - Math.exp(-(gsap.ticker.time - startedAt) / 1.3));
+      render();
+    };
+    gsap.ticker.add(climb);
 
     // Never block longer than 5s on slow networks.
     Promise.race([Promise.all([pageLoaded, minimum]), new Promise((r) => setTimeout(r, 5000))]).then(() => {
-      climb.kill();
+      gsap.ticker.remove(climb);
       gsap
         .timeline({
           onComplete: () => {
@@ -71,15 +74,7 @@ function runPreloader() {
             }
           },
         })
-        .to(counter, {
-          value: 100,
-          duration: 0.6,
-          ease: 'power2.out',
-          onUpdate: () => {
-            count.textContent = String(Math.round(counter.value)).padStart(2, '0');
-            gsap.set(bar, { scaleX: counter.value / 100 });
-          },
-        })
+        .to(counter, { value: 100, duration: 0.5, ease: 'none', onUpdate: render })
         .to([logo, tag, count, el.querySelector('.preloader__meta')], { opacity: 0, y: -30, duration: 0.6, stagger: 0.05, ease: 'power2.in' })
         .add(resolve, '-=0.1')
         .to(el, { clipPath: 'inset(0 0 100% 0)', duration: 1.2, ease: 'expo.inOut' }, '<');

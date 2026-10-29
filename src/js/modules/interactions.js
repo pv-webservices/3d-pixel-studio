@@ -3,31 +3,94 @@ import { gsap, ScrollTrigger, isTouch, prefersReducedMotion, startScroll, stopSc
 
 const mediaUrl = (key, width = 640) => `/media/${key}-${width}.webp`;
 
-/** Rows with data-hover-img reveal a floating preview that trails the pointer. */
+const TOUCH_LINGER_MS = 900;
+
+/**
+ * Rows with data-hover-img reveal a floating preview that trails the pointer (or the finger on touch).
+ * The row under the pointer is re-checked on scroll too, so the preview never stays stuck on screen
+ * when the page scrolls away beneath a still cursor.
+ */
 export function initHoverFollow() {
-  if (isTouch) return;
   document.querySelectorAll('[data-hover-follow]').forEach((box) => {
-    const section = box.closest('section') ?? document;
+    const section = box.closest('section') ?? document.body;
     const img = box.querySelector('img');
     gsap.set(box, { xPercent: -50, yPercent: -50, scale: 0.6 });
-    const rows = section.querySelectorAll('[data-hover-img]');
     const xTo = gsap.quickTo(box, 'x', { duration: 0.7, ease: 'power3' });
     const yTo = gsap.quickTo(box, 'y', { duration: 0.7, ease: 'power3' });
     const rotTo = gsap.quickTo(box, 'rotate', { duration: 0.9, ease: 'power3' });
+    let pointer = null;
+    let current = null;
     let lastX = 0;
-    rows.forEach((row) => {
-      row.addEventListener('pointerenter', () => {
-        img.src = mediaUrl(row.dataset.hoverImg);
-        gsap.to(box, { opacity: 1, scale: 1, duration: 0.6, ease: 'expo.out' });
-      });
-      row.addEventListener('pointerleave', () => gsap.to(box, { opacity: 0, scale: 0.6, duration: 0.5, ease: 'expo.out' }));
-      row.addEventListener('pointermove', (e) => {
-        xTo(e.clientX);
-        yTo(e.clientY);
-        rotTo(gsap.utils.clamp(-12, 12, (e.clientX - lastX) * 0.6));
-        lastX = e.clientX;
-      });
+    let lingerTimer = 0;
+
+    const rowAt = ({ x, y }) => {
+      const row = document.elementFromPoint(x, y)?.closest('[data-hover-img]');
+      return row && section.contains(row) ? row : null;
+    };
+    const show = (row) => {
+      if (row === current) return;
+      current = row;
+      img.src = mediaUrl(row.dataset.hoverImg);
+      gsap.to(box, { opacity: 1, scale: 1, duration: 0.6, ease: 'expo.out', overwrite: 'auto' });
+    };
+    const hide = () => {
+      if (!current) return;
+      current = null;
+      gsap.to(box, { opacity: 0, scale: 0.6, duration: 0.5, ease: 'expo.out', overwrite: 'auto' });
+    };
+    const sync = () => {
+      const row = pointer && rowAt(pointer);
+      if (row) show(row);
+      else hide();
+    };
+    const follow = (x, y) => {
+      // On touch the preview floats above the finger instead of hiding under it.
+      const lift = isTouch ? box.offsetHeight * 0.75 : 0;
+      if (!current) gsap.set(box, { x, y: y - lift });
+      xTo(x);
+      yTo(y - lift);
+      rotTo(gsap.utils.clamp(-12, 12, (x - lastX) * 0.6));
+      lastX = x;
+    };
+
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top bottom',
+      end: 'bottom top',
+      onUpdate: sync,
+      onToggle: (self) => !self.isActive && hide(),
     });
+
+    if (!isTouch) {
+      // Window-level so the last known position stays right even after the cursor leaves the section.
+      window.addEventListener('pointermove', (e) => (pointer = { x: e.clientX, y: e.clientY }), { capture: true, passive: true });
+      section.addEventListener('pointermove', (e) => {
+        follow(e.clientX, e.clientY);
+        sync();
+      });
+      section.addEventListener('pointerleave', hide);
+      return;
+    }
+
+    const onTouch = (e) => {
+      const t = e.touches[0];
+      if (!t) return;
+      clearTimeout(lingerTimer);
+      pointer = { x: t.clientX, y: t.clientY };
+      follow(pointer.x, pointer.y);
+      sync();
+    };
+    const release = () => {
+      clearTimeout(lingerTimer);
+      lingerTimer = setTimeout(() => {
+        pointer = null;
+        hide();
+      }, TOUCH_LINGER_MS);
+    };
+    section.addEventListener('touchstart', onTouch, { passive: true });
+    section.addEventListener('touchmove', onTouch, { passive: true });
+    section.addEventListener('touchend', release, { passive: true });
+    section.addEventListener('touchcancel', release, { passive: true });
   });
 }
 
