@@ -1,0 +1,28 @@
+<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0F3B35" />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        try {
+          var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (sessionStorage.getItem('3dps-transition')) {
+            sessionStorage.removeItem('3dps-transition');
+            if (!reduce) d.classList.add('is-entering');
+          } else if (location.pathname === '/' && !sessionStorage.getItem('3dps-loaded') && !reduce) {
+            d.classList.add('is-preloading');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="/src/styles/main.css" />
+    <script type="module" src="/src/js/main.js"></script>

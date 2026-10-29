@@ -1,0 +1,10 @@
+| Colour | HEX code | Intended use |
+|---|---|---|
+| *Deep Emerald* | #0F3B35 | Headings, footer and dark brand sections |
+| *Super Ivory* | #FAF9F4 | Main page background; text on green buttons |
+| *Soft Ivory* | #F3EFE9 | Cards and contrasting background sections |
+| *Graphite* | #1A1C1F | Main body text |
+| *Secondary Graphite* | #2A2C2E | Supporting text and secondary labels |
+| *Jupiter Gold* | #D4AF37 | Gold logo treatment, thin lines, icons and small accents |
+| *CTA Emerald* | #0F6F54 | Primary action buttons |
+| *CTA Hover* | #0C5A49 | Button colour on mouse hover |

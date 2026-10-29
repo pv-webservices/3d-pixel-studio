@@ -1,0 +1,415 @@
+3d Pixel Studio — Final SEO Setup for Developer
+================================================
+
+Please configure the following SEO structure in WordPress/Yoast (or equivalent SEO plugin).
+
+IMPORTANT:
+- Keep URLs short and clean.
+- SEO title, page H1, and URL are different things.
+- Dynamic article/project SEO titles should be set once globally so future posts/projects do not require developer changes.
+- Use “Insights” everywhere instead of “Blog”.
+- Brand styling should remain: 3d Pixel Studio.
+
+
+1. HOME
+-------
+URL:
+https://3dpixelstudio.com/
+
+SEO Title:
+Architectural Visualization & CGI Studio | 3d Pixel Studio
+
+Meta Description:
+Architectural visualization studio creating interior and exterior CGI, architectural films and 3D floor plans for developers and architects across India, UAE and international markets.
+
+Visible H1:
+Architectural CGI for Developers & Architects Who Need Absolute Clarity Before Construction
+
+Schema:
+Organization + WebSite
+
+Organization schema should include:
+- 3d Pixel Studio
+- Official logo
+- Website URL
+- Mumbai address
+- Phone
+- Email
+- Official LinkedIn company page
+- Other genuine official social profiles
+
+
+2. WORK
+-------
+URL:
+https://3dpixelstudio.com/work/
+
+SEO Title:
+Architectural Visualization Portfolio | 3d Pixel Studio
+
+Meta Description:
+Explore selected architectural visualization work by 3d Pixel Studio across exterior CGI, interior CGI, architectural films, walkthroughs and 3D floor plans.
+
+Visible H1:
+Architectural CGI & Visualization Portfolio
+
+Work filters:
+- All
+- Exterior CGI
+- Interior CGI
+- Architectural Films
+- 3D Floor Plans
+
+Important:
+These should remain UX filters. Do not create fake separate SEO pages just for each filter.
+
+Each category can link to the relevant Services section where appropriate.
+
+
+3. STUDIO
+---------
+URL:
+https://3dpixelstudio.com/studio/
+
+SEO Title:
+Studio | 3d Pixel Studio — Architectural Visualization
+
+Meta Description:
+Meet 3d Pixel Studio, a specialist architectural visualization studio founded in Mumbai in 2006, working with architecture and real-estate teams across India, UAE and international markets.
+
+Visible H1:
+A specialist architectural visualization studio.
+
+Important:
+The large word “STUDIO” is decorative display text, not the main semantic H1.
+
+Contextual links:
+- View selected architectural visualization work →
+- Explore our CGI services →
+
+
+4. SERVICES
+-----------
+URL:
+https://3dpixelstudio.com/services/
+
+SEO Title:
+Architectural Visualization Services | 3d Pixel Studio
+
+Meta Description:
+Interior CGI, exterior CGI, architectural films and 3D floor plans developed for architectural reviews, presentations, project launches and real-estate marketing.
+
+Visible H1:
+Architectural CGI & visualization services built for clarity.
+
+Service sections:
+- Interior CGI
+- Exterior CGI
+- Architectural Films
+- 3D Floor Plans
+
+Important:
+Each service section should link to the relevant Work filter/project proof.
+
+
+5. INSIGHTS
+-----------
+Preferred URL:
+https://3dpixelstudio.com/insights/
+
+SEO Title:
+Architectural Visualization Insights | 3d Pixel Studio
+
+Meta Description:
+Perspectives from 3d Pixel Studio on architectural CGI, design validation, materials, lighting and visualization decisions before construction.
+
+Visible H1:
+Insights on architectural CGI & visualization.
+
+Important:
+Use “Insights” everywhere instead of “Blog”.
+
+If /blog/ is already indexed or has backlinks, use a proper 301 redirect:
+ /blog/ → /insights/
+
+
+6. INDIVIDUAL INSIGHT / ARTICLE PAGES — DYNAMIC
+------------------------------------------------
+Please set ONE global dynamic SEO title template.
+
+SEO Title Template:
+[Post Title] | 3d Pixel Studio Insights
+
+Example:
+Where Interior CGI Adds Clarity Before Construction | 3d Pixel Studio Insights
+
+Preferred article URL structure:
+https://3dpixelstudio.com/insights/post-title/
+
+Article H1:
+The article title itself.
+
+The article template should dynamically pull:
+- Title
+- Featured image
+- Category
+- Author
+- Publish date
+- Modified date when genuinely updated
+- Short excerpt
+- Article content
+
+Author:
+Mushir Qazi
+Founder & Principal
+
+Schema:
+BlogPosting or Article
+
+Schema should include:
+- headline
+- author
+- author URL/profile
+- image
+- datePublished
+- dateModified
+- publisher
+
+Important:
+No developer involvement should be required every time a new Insight is published.
+
+
+7. INDIVIDUAL PROJECT PAGES — DYNAMIC
+-------------------------------------
+Please use one reusable WordPress project template.
+
+SEO Title Template:
+[Project Name] — [Service Type] | 3d Pixel Studio
+
+Examples:
+Oberoi 360 — Interior CGI | 3d Pixel Studio
+Shubh Kamna Heights — Exterior CGI | 3d Pixel Studio
+
+Project H1:
+Project Name
+
+Below H1:
+Service Type · Project Type · Location
+
+Project content should dynamically support:
+- Project name
+- Service/category
+- Location
+- Images
+- Project description
+- Related service link
+- Related work/project links
+
+Important:
+We should be able to add projects ourselves without developer redesign each time.
+
+
+8. CANONICAL SETTINGS
+---------------------
+Every important page should have a self-referencing canonical.
+
+Home → /
+Work → /work/
+Studio → /studio/
+Services → /services/
+Insights → /insights/
+Article → its own article URL
+Project → its own project URL
+
+Also make sure only one final domain version is used consistently:
+- HTTPS only
+- Preferred www/non-www version only
+- Redirect all duplicate versions to the preferred canonical URL
+
+
+9. ROBOTS / INDEXING
+--------------------
+Important public pages:
+Index = YES
+Follow = YES
+
+Do NOT accidentally noindex:
+- Home
+- Work
+- Studio
+- Services
+- Insights
+- Project pages
+- Article pages
+
+Normally noindex:
+- WordPress internal search pages
+- Thin/duplicate archive pages if not used
+- Staging/test pages
+
+
+10. OPEN GRAPH / SOCIAL SHARING
+-------------------------------
+For every important page set:
+- OG Title
+- OG Description
+- OG Image
+
+Suggested OG image:
+Home → Signature hero CGI
+Work → Strong portfolio CGI
+Studio → Studio/team image
+Services → Strong service CGI
+Insights → Insights/editorial visual
+Article → Article featured image
+Project → Main project image
+
+Do not allow WordPress to randomly choose an irrelevant image.
+
+
+11. IMAGE SEO
+-------------
+For meaningful CGI images:
+
+Use descriptive filenames.
+
+Good:
+shubh-kamna-heights-exterior-cgi.webp
+
+Bad:
+IMG_0382-final2.webp
+
+Use useful ALT text.
+
+Good:
+Shubh Kamna Heights residential tower exterior CGI at dusk.
+
+Bad:
+best 3d architectural visualization cgi rendering mumbai india
+
+Also:
+- Use WebP/AVIF where suitable
+- Set width/height
+- Use responsive srcset/sizes
+- Lazy-load below-the-fold images
+- Do not lazy-load the main hero/LCP image
+- Important portfolio images should use proper <img> or <picture> elements rather than only CSS backgrounds
+
+
+12. FOOTER / INTERNAL LINKS
+---------------------------
+Final footer structure:
+
+3d PIXEL STUDIO
+Short studio description
+
+EXPLORE
+- Selected Work
+- Studio
+- Services
+- Insights
+
+ENQUIRIES
+- Discuss on WhatsApp →
+- Response within 12–24 hours
+
+Do NOT add:
+- Featured Work list
+- Keyword-heavy SEO links
+- Repetitive service keyword links in the footer
+
+
+13. DYNAMIC INSIGHTS PAGE BEHAVIOUR
+-----------------------------------
+Insights page must be a dynamic WordPress archive/template.
+
+Fixed:
+[01] section number
+LATEST INSIGHT heading
+
+Dynamic:
+- Latest published post automatically appears in the large featured article area
+- Older posts automatically move to “More Insights”
+- Article count updates automatically:
+  01 ARTICLE
+  02 ARTICLES
+  03 ARTICLES
+  etc.
+
+The latest article block should automatically pull:
+- Featured image
+- Category
+- Title
+- Date
+- Author
+- Excerpt
+
+No developer involvement should be required for every new Insight.
+
+
+14. DYNAMIC PROJECT BEHAVIOUR
+-----------------------------
+Project pages should also use one reusable WordPress template.
+
+Dynamic fields:
+- Project name
+- Service type
+- Location
+- Images
+- Description
+- Related services
+- Related projects
+
+No developer involvement should be required for every new project.
+
+
+15. FINAL SEO TITLE MASTER LIST
+-------------------------------
+HOME
+Architectural Visualization & CGI Studio | 3d Pixel Studio
+
+WORK
+Architectural Visualization Portfolio | 3d Pixel Studio
+
+STUDIO
+Studio | 3d Pixel Studio — Architectural Visualization
+
+SERVICES
+Architectural Visualization Services | 3d Pixel Studio
+
+INSIGHTS
+Architectural Visualization Insights | 3d Pixel Studio
+
+PROJECT — DYNAMIC
+[Project Name] — [Service Type] | 3d Pixel Studio
+
+ARTICLE — DYNAMIC
+[Post Title] | 3d Pixel Studio Insights
+
+
+16. FINAL CHECK BEFORE LAUNCH
+-----------------------------
+Please validate:
+- Correct SEO title on every page
+- Correct meta description
+- One clear H1 per page
+- Logical H2/H3 hierarchy
+- Canonical URL
+- Index/follow status
+- Open Graph title/description/image
+- Organization/WebSite schema
+- Article schema
+- Project/breadcrumb schema where relevant
+- Internal links
+- Image alt text
+- Image filenames
+- 301 redirects where required
+- Sitemap
+- Robots.txt
+- HTTPS and preferred domain redirects
+- Mobile responsive layout
+- Core Web Vitals
+- Accessibility basics
+- Search Console indexing after launch
+
+END
