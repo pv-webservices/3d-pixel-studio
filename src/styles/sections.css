@@ -306,9 +306,11 @@
 }
 .stack__num {
   font-family: var(--font-display);
-  font-size: clamp(4rem, 9vw, 9rem);
-  line-height: 0.8;
+  font-size: clamp(3.4rem, 7.5vw, 7.5rem);
+  line-height: 0.9;
   font-weight: 300;
+  font-style: italic;
+  font-variant-numeric: lining-nums;
   color: var(--gold);
   margin-bottom: auto;
 }

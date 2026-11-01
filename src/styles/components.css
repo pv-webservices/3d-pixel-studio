@@ -107,16 +107,29 @@
   align-items: center;
   gap: 0.7rem;
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  padding-bottom: 0.4rem;
-  background: linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat;
-  transition: background-size 0.6s var(--ease-out);
+  color: var(--cta);
+  padding-bottom: 0.45rem;
+  background:
+    linear-gradient(var(--cta), var(--cta)) left bottom / 0% 2px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) left bottom / 100% 2px no-repeat;
+  transition: background-size 0.6s var(--ease-out), color 0.3s;
 }
 .link-arrow:hover {
-  background-size: 0% 1px;
-  background-position: right bottom;
+  color: var(--cta-hover);
+  background-size: 100% 2px, 100% 2px;
+}
+.is-dark .link-arrow {
+  color: var(--gold);
+  background:
+    linear-gradient(var(--ivory), var(--ivory)) left bottom / 0% 2px no-repeat,
+    linear-gradient(var(--gold), var(--gold)) left bottom / 100% 2px no-repeat;
+}
+.is-dark .link-arrow:hover {
+  color: var(--ivory);
+  background-size: 100% 2px, 100% 2px;
 }
 .link-arrow svg {
   width: 1rem;
@@ -637,7 +650,7 @@
 /* ---------- CTA block ---------- */
 .cta {
   position: relative;
-  min-height: 100svh;
+  min-height: clamp(520px, 78svh, 860px);
   display: grid;
   align-items: end;
   overflow: hidden;
@@ -662,7 +675,7 @@
   background: linear-gradient(180deg, rgba(var(--graphite-rgb), 0.15) 0%, rgba(var(--emerald-rgb), 0.55) 45%, rgba(var(--emerald-rgb), 0.96) 100%);
 }
 .cta__inner {
-  padding-block: calc(var(--section) * 1.2) var(--section);
+  padding-block: calc(var(--section) * 1.1) clamp(3.5rem, 7vw, 6rem);
   display: grid;
   gap: 2.5rem;
 }
@@ -679,22 +692,6 @@
   flex-wrap: wrap;
   gap: 1rem;
 }
-.cta__contact {
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  padding-top: 2rem;
-  border-top: 1px solid var(--line-light);
-  font-size: 0.95rem;
-}
-.cta__contact .label {
-  display: block;
-  color: var(--gold);
-  margin-bottom: 0.4rem;
-}
-.cta__contact a:hover {
-  color: var(--gold);
-}
 @media (min-width: 900px) {
   .cta__row {
     grid-template-columns: 1.3fr 1fr;
@@ -704,8 +701,8 @@
 /* ---------- Footer ---------- */
 .footer {
   position: relative;
-  background: var(--graphite);
-  color: var(--ivory);
+  background: var(--ivory-soft);
+  color: var(--graphite);
   overflow: hidden;
 }
 .footer__top {
@@ -715,7 +712,7 @@
 }
 .footer__about {
   max-width: 36ch;
-  color: var(--muted-light);
+  color: var(--muted);
 }
 .footer__brand {
   display: flex;
@@ -728,13 +725,15 @@
 }
 .footer__brand span {
   font-family: var(--font-display);
-  font-size: 1.6rem;
-  letter-spacing: 0.06em;
+  font-size: 1.45rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  color: var(--emerald);
 }
 .footer__col .label {
   display: block;
-  color: var(--gold);
+  color: var(--cta);
   margin-bottom: 1.2rem;
 }
 .footer__col li + li {
@@ -742,20 +741,20 @@
 }
 .footer__col a {
   position: relative;
-  color: var(--ivory);
+  color: var(--graphite);
   transition: color 0.3s;
 }
 .footer__col a:hover {
-  color: var(--gold);
+  color: var(--cta);
 }
 .footer__col p {
-  color: var(--muted-light);
+  color: var(--muted);
   font-size: 0.92rem;
 }
 .footer__social {
   display: flex;
   gap: 0.7rem;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 .footer__social a {
   width: 44px;
@@ -763,29 +762,34 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  box-shadow: inset 0 0 0 1px var(--line-light);
+  color: var(--emerald);
+  box-shadow: inset 0 0 0 1px rgba(var(--emerald-rgb), 0.35);
   transition: background-color 0.4s, color 0.4s, box-shadow 0.4s;
 }
 .footer__social a:hover {
-  background: var(--gold);
-  color: var(--graphite);
+  background: var(--emerald);
+  color: var(--ivory);
   box-shadow: none;
 }
 .footer__social svg {
   width: 18px;
   height: 18px;
 }
+.footer__sign {
+  border-top: 1px solid var(--line);
+  padding-block: clamp(1.5rem, 3vw, 2.5rem) clamp(2rem, 4vw, 3.5rem);
+  text-align: center;
+}
 .footer__mega {
   font-family: var(--font-display);
   font-weight: 300;
-  font-size: clamp(3.4rem, 13.4vw, 17rem);
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+  font-size: clamp(3rem, 11.5vw, 14.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   white-space: nowrap;
-  text-align: center;
-  color: var(--ivory);
-  /* Bottom room for Cormorant's old-style "3", which descends below the baseline. */
-  padding-block: 1rem 0.22em;
+  color: var(--emerald);
+  /* Room for the reveal mask so ascenders and descenders are not clipped. */
+  padding-block: 0.05em 0.12em;
   overflow: hidden;
 }
 .footer__mega span {
@@ -793,7 +797,27 @@
 }
 .footer__mega em {
   font-style: italic;
-  color: var(--gold);
+  color: var(--cta);
+  /* Italic overhang otherwise crowds the next word. */
+  padding-right: 0.1em;
+}
+.footer__tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--graphite-2);
+}
+.footer__tagline::before,
+.footer__tagline::after {
+  content: '';
+  width: clamp(1.5rem, 4vw, 3.5rem);
+  height: 1px;
+  background: var(--gold);
 }
 .footer__bottom {
   display: flex;
@@ -802,25 +826,35 @@
   justify-content: space-between;
   align-items: center;
   padding-block: 1.6rem 2rem;
-  border-top: 1px solid var(--line-light);
+  border-top: 1px solid var(--line);
   font-size: var(--fs-label);
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--muted-light);
+  color: var(--muted);
 }
 .footer__top-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  color: var(--ivory);
+  color: var(--emerald);
 }
 .footer__top-btn:hover {
-  color: var(--gold);
+  color: var(--cta);
 }
 @media (min-width: 900px) {
   .footer__top {
     grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+  }
+}
+@media (max-width: 599px) {
+  .footer__tagline {
+    letter-spacing: 0.12em;
+    padding-inline: var(--gutter);
+  }
+  .footer__tagline::before,
+  .footer__tagline::after {
+    display: none;
   }
 }
 
@@ -931,8 +965,13 @@
   min-height: 0;
 }
 .lightbox__stage img {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: auto;
+  height: auto;
+  max-width: calc(100% - 2 * var(--gutter));
   max-height: 100%;
-  max-width: 100%;
   object-fit: contain;
   border-radius: 2px;
 }

@@ -3,6 +3,15 @@
    Palette is restricted to the brand theme file (public/Theme Color.txt).
    ========================================================================== */
 
+/* Brand display face — Fraunces variable (roman self-hosted; italics come from Google Fonts in head.html). */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/Fraunces-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Brand palette */
   --emerald: #0f3b35;
@@ -25,15 +34,15 @@
   --muted-light: rgba(var(--ivory-rgb), 0.7);
 
   /* Type */
-  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-display: 'Fraunces', 'Times New Roman', serif;
   --font-sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  --fs-mega: clamp(4.2rem, 17vw, 22rem);
-  --fs-display: clamp(3rem, 7.6vw, 8.6rem);
-  --fs-h1: clamp(2.6rem, 6vw, 6.6rem);
-  --fs-h2: clamp(2.3rem, 4.6vw, 5rem);
-  --fs-h3: clamp(1.6rem, 2.4vw, 2.5rem);
-  --fs-h4: clamp(1.25rem, 1.5vw, 1.55rem);
+  --fs-mega: clamp(3.6rem, 14vw, 18rem);
+  --fs-display: clamp(2.6rem, 6.4vw, 7.2rem);
+  --fs-h1: clamp(2.3rem, 5vw, 5.6rem);
+  --fs-h2: clamp(2rem, 3.8vw, 4.2rem);
+  --fs-h3: clamp(1.4rem, 2vw, 2.1rem);
+  --fs-h4: clamp(1.15rem, 1.35vw, 1.4rem);
   --fs-lead: clamp(1.08rem, 1.3vw, 1.3rem);
   --fs-body: 1rem;
   --fs-small: 0.875rem;
@@ -182,22 +191,22 @@ ol {
 .h4 {
   font-family: var(--font-display);
   font-weight: 400;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
   color: inherit;
 }
 .display {
   font-size: var(--fs-display);
-  line-height: 0.9;
+  line-height: 1;
   font-weight: 300;
 }
 .h1 {
   font-size: var(--fs-h1);
-  line-height: 0.96;
+  line-height: 1.04;
   font-weight: 300;
 }
 .h2 {
   font-size: var(--fs-h2);
-  line-height: 1;
+  line-height: 1.08;
   font-weight: 300;
 }
 .h3 {
@@ -380,10 +389,12 @@ ol {
 .js [data-split] {
   visibility: hidden;
 }
-.split-line {
-  overflow: hidden;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+/* SplitText line masks clip with overflow; pad them so ascenders and descenders (p, j, g) are never cut. */
+.split-line,
+.split-line-inner-mask {
+  overflow: clip;
+  padding-block: 0.1em 0.2em;
+  margin-block: -0.1em -0.2em;
 }
 
 @media (prefers-reduced-motion: reduce) {

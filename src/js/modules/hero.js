@@ -1,19 +1,14 @@
 import { gsap, prefersReducedMotion, scrollTo } from '../core/motion.js';
 
-/** Inner-page heroes: slow settle on entry, parallax + drifting display word on scroll. */
+/** Inner-page heroes: slow settle on entry, parallax on scroll. */
 export function initPageHero(ready) {
   const hero = document.querySelector('.page-hero, .studio-hero');
   if (!hero || prefersReducedMotion) return;
   const media = hero.querySelector('[data-page-hero-media] img');
-  const mega = hero.querySelector('[data-page-hero-mega]');
   if (media) {
     gsap.set(media, { scale: 1.18 });
     ready.then(() => gsap.to(media, { scale: 1.04, duration: 2.6, ease: 'expo.out' }));
     gsap.to(media, { yPercent: 14, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
-  }
-  if (mega) {
-    gsap.from(mega, { xPercent: 12, opacity: 0, duration: 2, ease: 'expo.out', delay: 0.3 });
-    gsap.to(mega, { xPercent: -14, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
   }
 }
 
