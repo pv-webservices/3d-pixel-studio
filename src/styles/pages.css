@@ -250,6 +250,10 @@
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px var(--line);
 }
+/* Keep the link (and its underline) as wide as its text, not the whole card column. */
+.svc-card__text .link-arrow {
+  align-self: flex-start;
+}
 .svc-card:nth-child(even) .link-arrow {
   color: var(--gold);
 }
@@ -658,19 +662,49 @@
   width: 44%;
   aspect-ratio: 4 / 3;
 }
-/* Phones: a tidy grid instead of the overlapping desktop collage. */
+/* Phones: an editorial grid instead of the overlapping desktop collage, and the two links as a ruled list. */
 @media (max-width: 899px) {
+  .practice__links {
+    display: grid;
+    gap: 0;
+    margin-top: 0.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .practice__links .link-arrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.15rem 0;
+    border-top: 1px solid var(--line);
+    background: none;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    line-height: 1.5;
+  }
+  .practice__links .link-arrow svg {
+    flex: none;
+    box-sizing: content-box;
+    width: 0.9rem;
+    height: 0.9rem;
+    padding: 0.55rem;
+    border-radius: 50%;
+    color: var(--gold);
+    box-shadow: inset 0 0 0 1px rgba(var(--gold-rgb), 0.7);
+  }
   .collage {
     min-height: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
   }
-  .collage .media {
+  /* Same specificity as the desktop :nth-child rules so these sizes win. */
+  .collage .media:nth-child(n) {
     position: relative;
     inset: auto;
     width: 100%;
-    box-shadow: none;
+    border-radius: 6px;
+    box-shadow: 0 24px 48px -32px rgba(var(--graphite-rgb), 0.45);
   }
   .collage .media:nth-child(1) {
     grid-column: 1 / -1;
@@ -679,6 +713,10 @@
   .collage .media:nth-child(2),
   .collage .media:nth-child(3) {
     aspect-ratio: 4 / 5;
+  }
+  /* A slight stagger keeps the pair from reading as a plain table. */
+  .collage .media:nth-child(3) {
+    margin-top: 2rem;
   }
 }
 @media (min-width: 900px) {
@@ -1538,4 +1576,24 @@
 .hp-field {
   position: absolute;
   left: -9999px;
+}
+
+/* ---------- Review: contact strip ---------- */
+.contact-strip {
+  display: grid;
+  gap: 1.75rem 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.contact-strip .label {
+  display: block;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+.contact-strip a {
+  transition: color 0.3s;
+}
+.contact-strip a:hover {
+  color: var(--gold);
 }

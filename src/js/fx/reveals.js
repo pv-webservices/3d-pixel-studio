@@ -66,7 +66,11 @@ function imageReveals() {
   document.querySelectorAll('[data-speed]').forEach((el) => {
     if (prefersReducedMotion) return;
     const speed = Number(el.dataset.speed);
-    gsap.to(el, { y: () => -speed * window.innerHeight * 0.25, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true } });
+    // The studio collage becomes an aligned grid on phones, where uneven drift would knock it out of line.
+    const query = el.closest('.collage') ? '(min-width: 900px)' : 'all';
+    gsap.matchMedia().add(query, () => {
+      gsap.to(el, { y: () => -speed * window.innerHeight * 0.25, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true } });
+    });
   });
 }
 
