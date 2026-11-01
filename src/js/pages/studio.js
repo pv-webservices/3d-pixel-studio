@@ -1,6 +1,6 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../core/motion.js';
 
-/** Pinned principles: scroll progress picks the active word + image. */
+/** Pinned principles: scroll progress picks the active word + image (desktop), or the step in view (mobile). */
 function initSteps() {
   document.querySelectorAll('[data-steps]').forEach((root) => {
     const steps = [...root.querySelectorAll('[data-step]')];
@@ -9,12 +9,26 @@ function initSteps() {
       steps.forEach((el, j) => el.classList.toggle('is-active', j === i));
       images.forEach((el, j) => el.classList.toggle('is-active', j === i));
     };
-    ScrollTrigger.create({
-      trigger: root,
-      start: 'top top',
-      end: 'bottom bottom',
-      onUpdate: (self) => activate(Math.min(steps.length - 1, Math.floor(self.progress * steps.length))),
-    });
+    gsap.matchMedia()
+      .add('(min-width: 900px)', () => {
+        ScrollTrigger.create({
+          trigger: root,
+          start: 'top top',
+          end: 'bottom bottom',
+          onUpdate: (self) => activate(Math.min(steps.length - 1, Math.floor(self.progress * steps.length))),
+        });
+      })
+      .add('(max-width: 899px)', () => {
+        steps.forEach((step, i) =>
+          ScrollTrigger.create({
+            trigger: step,
+            start: 'top 70%',
+            end: 'bottom 70%',
+            onEnter: () => activate(i),
+            onEnterBack: () => activate(i),
+          }),
+        );
+      });
   });
 }
 
@@ -43,8 +57,18 @@ function initWord() {
   gsap.from(word, { yPercent: 30, opacity: 0, letterSpacing: '0.05em', duration: 2, ease: 'expo.out', delay: 0.2 });
 }
 
+/** Touch screens have no hover: founders' portraits warm to colour while they are in view instead. */
+function initTeam() {
+  gsap.matchMedia().add('(hover: none)', () => {
+    document.querySelectorAll('.member').forEach((member) =>
+      ScrollTrigger.create({ trigger: member, start: 'top 75%', end: 'bottom 25%', toggleClass: 'is-inview' }),
+    );
+  });
+}
+
 export function init() {
   initSteps();
+  initTeam();
   initProcess();
   initWord();
 }

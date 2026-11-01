@@ -101,6 +101,8 @@
   color: var(--graphite-2);
 }
 .sec-index b {
+  flex: none;
+  white-space: nowrap;
   font-weight: 700;
   color: var(--cta);
 }
@@ -248,6 +250,9 @@
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px var(--line);
 }
+.svc-card:nth-child(even) .link-arrow {
+  color: var(--gold);
+}
 .svc-card:nth-child(even) .svc-card__tags span {
   box-shadow: inset 0 0 0 1px var(--line-light);
 }
@@ -290,6 +295,19 @@
 @media (min-width: 900px) {
   .svc-card {
     grid-template-columns: 1fr 1.15fr;
+  }
+}
+/* Phones: a service card is taller than the screen, so stacking would hide its image. Image first, normal scroll. */
+@media (max-width: 899px) {
+  .svc-card {
+    position: relative;
+    top: auto;
+    min-height: 0;
+  }
+  .svc-card__media {
+    order: -1;
+    min-height: 0;
+    aspect-ratio: 16 / 10;
   }
 }
 
@@ -567,6 +585,22 @@
   max-width: 44ch;
   color: var(--graphite-2);
 }
+/* Mobile: the image stays pinned under the header while the three principles scroll past it. */
+@media (max-width: 899px) {
+  .principles__visual {
+    position: sticky;
+    top: calc(var(--header-h) + 0.75rem);
+    z-index: 1;
+    aspect-ratio: 16 / 10;
+    /* Mask the copy scrolling underneath, including the strip between header and image. */
+    box-shadow:
+      0 0 0 0.75rem var(--ivory),
+      0 -2rem 0 0.75rem var(--ivory);
+  }
+  .principles__words {
+    padding-bottom: 20vh;
+  }
+}
 @media (min-width: 900px) {
   .principles {
     height: 280vh;
@@ -623,6 +657,29 @@
   bottom: 0;
   width: 44%;
   aspect-ratio: 4 / 3;
+}
+/* Phones: a tidy grid instead of the overlapping desktop collage. */
+@media (max-width: 899px) {
+  .collage {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .collage .media {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    box-shadow: none;
+  }
+  .collage .media:nth-child(1) {
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 10;
+  }
+  .collage .media:nth-child(2),
+  .collage .media:nth-child(3) {
+    aspect-ratio: 4 / 5;
+  }
 }
 @media (min-width: 900px) {
   .practice__grid {
@@ -755,7 +812,8 @@
   transform: scale(1.04);
   transition: filter 0.9s var(--ease-out), transform 1.2s var(--ease-out);
 }
-.member:hover .member__photo img {
+.member:hover .member__photo img,
+.member.is-inview .member__photo img {
   filter: grayscale(0);
   transform: scale(1);
 }
@@ -901,7 +959,8 @@
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  /* minmax(0, …): the nowrap category label must never widen a column past the screen. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(0.75rem, 1.6vw, 1.5rem);
   grid-auto-flow: dense;
 }
@@ -962,9 +1021,29 @@
   width: 56px;
   height: 56px;
 }
+/* Two narrow columns on phones: title above category so neither is squeezed. */
+@media (max-width: 599px) {
+  .tile__meta {
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-top: 0.6rem;
+  }
+  .tile__meta strong {
+    font-size: 1.05rem;
+  }
+  .tile__meta span {
+    font-size: 0.72rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tile .play-chip {
+    width: 44px;
+    height: 44px;
+  }
+}
 @media (min-width: 900px) {
   .gallery {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
   .tile {
     grid-column: span 2;
@@ -1173,6 +1252,8 @@
 /* ---------- Project review ---------- */
 .intake {
   display: grid;
+  /* minmax(0, …) lets long field content shrink instead of widening the page on phones. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 3rem;
 }
 .intake__aside {
@@ -1218,7 +1299,7 @@
 }
 @media (min-width: 1000px) {
   .intake {
-    grid-template-columns: 4fr 7fr;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
     gap: 6vw;
   }
   .intake__aside {
@@ -1229,6 +1310,7 @@
 
 .form {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 2.4rem;
   padding: clamp(1.5rem, 4vw, 3.5rem);
   background: var(--ivory);
@@ -1246,6 +1328,8 @@
   color: var(--muted);
 }
 .form fieldset {
+  /* Fieldsets default to min-width: min-content, which pushed the form past the screen edge. */
+  min-width: 0;
   border: 0;
   margin: 0;
   padding: 0;
@@ -1263,6 +1347,7 @@
 }
 .form__row {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.4rem;
 }
 @media (min-width: 700px) {

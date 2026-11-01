@@ -6,6 +6,8 @@ import { FILMS, thumb } from '../data/films.js';
 const PAGE_SIZE = 18;
 const CATEGORY_LABEL = { exterior: 'Exterior CGI', interior: 'Interior CGI', plan: '3D Floor Plan', film: 'Architectural Film' };
 const LAYOUT = ['', '', '', 'wide', '', '', '', '', '', 'wide'];
+// FLIP reflow on the narrow two-column grid overlaps tiles mid-flight; small screens get a clean fade instead.
+const smallScreen = window.matchMedia('(max-width: 899px)');
 
 const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const srcset = (m) => m.sizes.map((w) => `${m.src}-${w}.webp ${w}w`).join(', ');
@@ -62,10 +64,9 @@ function initGallery() {
 
   const render = (animate) => {
     const items = visibleItems();
+    if (animate && !prefersReducedMotion && smallScreen.matches) return fadeSwap(items);
     const flipState = animate && !prefersReducedMotion ? Flip.getState(gallery.children) : null;
-    gallery.innerHTML = items.slice(0, state.shown).map(tileHtml).join('');
-    moreBtn.parentElement.hidden = state.shown >= items.length;
-    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === state.filter)));
+    swapContent(items);
     if (flipState) {
       Flip.from(flipState, {
         targets: gallery.children,
@@ -80,9 +81,33 @@ function initGallery() {
     } else {
       ScrollTrigger.refresh();
     }
+    bindThumbFallback();
+  };
+
+  const swapContent = (items) => {
+    gallery.innerHTML = items.slice(0, state.shown).map(tileHtml).join('');
+    moreBtn.parentElement.hidden = state.shown >= items.length;
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === state.filter)));
+  };
+
+  const bindThumbFallback = () =>
     gallery.querySelectorAll('[data-yt-thumb]').forEach((img) =>
       img.addEventListener('error', () => (img.src = img.src.replace('maxresdefault', 'hqdefault')), { once: true }),
     );
+
+  const fadeSwap = (items) => {
+    gsap.killTweensOf(gallery);
+    gsap.to(gallery, {
+      opacity: 0,
+      duration: 0.25,
+      ease: 'power2.in',
+      onComplete: () => {
+        swapContent(items);
+        bindThumbFallback();
+        ScrollTrigger.refresh();
+        gsap.to(gallery, { opacity: 1, duration: 0.45, ease: 'power2.out' });
+      },
+    });
   };
 
   buttons.forEach((btn) =>

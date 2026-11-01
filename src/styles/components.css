@@ -139,6 +139,20 @@
 .link-arrow:hover svg {
   transform: translateX(5px);
 }
+@media (max-width: 599px) {
+  .link-arrow {
+    gap: 0.5rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+    padding-bottom: 0.35rem;
+  }
+  .link-arrow svg {
+    flex: none;
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+}
 
 /* ---------- Header ---------- */
 .header {
@@ -342,9 +356,10 @@
   height: 100%;
   display: grid;
   grid-template-columns: 1fr;
-  align-content: center;
-  gap: 3rem;
-  padding: calc(var(--header-h) + 2rem) var(--gutter) 2rem;
+  /* "safe" keeps the top of the list reachable (below the header) when it is taller than the screen. */
+  align-content: safe center;
+  gap: clamp(2rem, 5vh, 3rem);
+  padding: calc(var(--header-h) + 1.5rem) var(--gutter) 2rem;
   overflow-y: auto;
 }
 .menu__nav a {
@@ -364,9 +379,9 @@
 .menu__label {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: clamp(2.8rem, 7vw, 6.4rem);
+  font-size: clamp(2.2rem, min(6.4vw, 8.4vh), 5.6rem);
   font-weight: 300;
-  line-height: 1.05;
+  line-height: 1.1;
   transition: color 0.4s;
 }
 .menu__nav a:hover .menu__label,
@@ -376,7 +391,9 @@
 }
 /* Hover shift lives on the mask wrapper so it never fights GSAP's transform on the label. */
 .menu__line {
-  overflow: hidden;
+  overflow: clip;
+  /* Room for descenders (j, g) and ascenders inside the reveal mask. */
+  padding-block: 0.08em 0.2em;
   transition: transform 0.6s var(--ease-out);
 }
 .menu__nav a:hover .menu__line,

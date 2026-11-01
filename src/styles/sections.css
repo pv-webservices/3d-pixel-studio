@@ -706,11 +706,17 @@
   transform-origin: top;
 }
 .svc-row__num {
+  white-space: nowrap;
   font-size: var(--fs-label);
   font-weight: 700;
   letter-spacing: 0.18em;
   color: var(--cta);
   transition: color 0.4s;
+}
+/* Index sits on the title's first baseline, even when the title wraps. */
+.svc-row__num,
+.svc-row__title {
+  align-self: baseline;
 }
 .svc-row__title {
   font-family: var(--font-display);

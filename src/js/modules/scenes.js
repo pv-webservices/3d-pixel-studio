@@ -12,14 +12,17 @@ export function initStack() {
   document.querySelectorAll('[data-stack]').forEach((stack) => {
     const cards = [...stack.children];
     if (prefersReducedMotion) return;
-    cards.forEach((card, i) => {
-      const next = cards[i + 1];
-      if (!next) return;
-      gsap.to(card, {
-        scale: 0.9 + i * 0.02,
-        opacity: 0.55,
-        ease: 'none',
-        scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 20%', scrub: true },
+    // Re-evaluated per breakpoint: cards that CSS un-sticks (e.g. tall service cards on phones) simply scroll.
+    media.add({ mobile: MOBILE, desktop: DESKTOP }, () => {
+      cards.forEach((card, i) => {
+        const next = cards[i + 1];
+        if (!next || getComputedStyle(card).position !== 'sticky') return;
+        gsap.to(card, {
+          scale: 0.9 + i * 0.02,
+          opacity: 0.55,
+          ease: 'none',
+          scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 20%', scrub: true },
+        });
       });
     });
     cards.forEach((card) => {
