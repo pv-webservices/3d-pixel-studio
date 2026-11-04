@@ -104,6 +104,9 @@
 
 .link-arrow {
   display: inline-flex;
+  /* As a grid item it would stretch to the column width; keep the underline to the text + arrow. */
+  justify-self: start;
+  width: fit-content;
   align-items: center;
   gap: 0.7rem;
   font-size: 0.78rem;
