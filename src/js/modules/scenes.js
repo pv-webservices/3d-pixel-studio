@@ -4,6 +4,10 @@ import { gsap, ScrollTrigger, prefersReducedMotion } from '../core/motion.js';
 const media = gsap.matchMedia();
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 const REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
+// Phones held sideways are too short for a pinned gallery; they get a native swipe row instead.
+const SHORT_SCREEN = '(max-height: 520px)';
+const PIN_GALLERY = `${MOTION_OK} and (min-height: 521px)`;
+const SWIPE_GALLERY = `${REDUCED_MOTION}, ${SHORT_SCREEN}`;
 const MOBILE = '(max-width: 899px)';
 const DESKTOP = '(min-width: 900px)';
 
@@ -62,7 +66,7 @@ export function initStepIn() {
     .to({}, { duration: 0.3 });
 }
 
-/** Pinned horizontal gallery driven by vertical scroll on every screen; native swipe only for reduced motion. */
+/** Pinned horizontal gallery driven by vertical scroll; native swipe for reduced motion and short (landscape) screens. */
 export function initHorizontal() {
   const section = document.querySelector('[data-works]');
   if (!section) return;
@@ -77,7 +81,7 @@ export function initHorizontal() {
     if (current) current.textContent = String(Math.min(cards.length, Math.floor(p * cards.length) + 1)).padStart(2, '0');
   };
 
-  media.add(MOTION_OK, () => {
+  media.add(PIN_GALLERY, () => {
     const distance = () => track.scrollWidth - window.innerWidth;
     const tween = gsap.to(track, {
       x: () => -distance(),
@@ -99,7 +103,7 @@ export function initHorizontal() {
     });
   });
 
-  media.add(REDUCED_MOTION, () => {
+  media.add(SWIPE_GALLERY, () => {
     const viewport = section.querySelector('.works__viewport');
     const onScroll = () => setProgress(viewport.scrollLeft / Math.max(1, viewport.scrollWidth - viewport.clientWidth));
     viewport.addEventListener('scroll', onScroll, { passive: true });

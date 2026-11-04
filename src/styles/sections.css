@@ -143,9 +143,15 @@
     display: flex;
   }
 }
+/* Phones: the badge stays, smaller, in the top corner; the copy starts below it so they never overlap. */
 @media (max-width: 640px) {
   .hero__badge {
-    display: none;
+    --badge-size: 88px;
+    width: var(--badge-size);
+    top: calc(var(--header-h) + 0.5rem);
+  }
+  .hero__content {
+    padding-top: calc(var(--header-h) + var(--badge-size, 88px) + 1.75rem);
   }
 }
 
@@ -560,8 +566,8 @@
   transform-origin: left;
   transform: scaleX(0);
 }
-/* Reduced motion: native swipe instead of the pinned scene */
-@media (prefers-reduced-motion: reduce) {
+/* Reduced motion and short landscape screens: native swipe instead of the pinned scene */
+@media (prefers-reduced-motion: reduce), (max-height: 520px) {
   .works__viewport {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -760,6 +766,21 @@
 .svc-row:hover .svc-row__arrow {
   transform: rotate(45deg);
   box-shadow: inset 0 0 0 1px var(--gold);
+}
+@media (max-width: 599px) {
+  .svc-row {
+    gap: 0.4rem 0.9rem;
+  }
+  .svc-row__title {
+    font-size: clamp(1.75rem, 8.6vw, 2.2rem);
+  }
+  .svc-row__arrow {
+    width: 42px;
+    height: 42px;
+  }
+  .svc-row__arrow svg {
+    width: 18px;
+  }
 }
 @media (min-width: 1000px) {
   .svc-row {

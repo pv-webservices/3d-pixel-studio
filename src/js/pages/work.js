@@ -2,6 +2,7 @@
 import { Flip, gsap, ScrollTrigger, prefersReducedMotion, startScroll, stopScroll } from '../core/motion.js';
 import MEDIA from '../../data/media.json';
 import { FILMS, thumb } from '../data/films.js';
+import { heroCoverEnd } from '../core/layers.js';
 
 const PAGE_SIZE = 18;
 const CATEGORY_LABEL = { exterior: 'Exterior CGI', interior: 'Interior CGI', plan: '3D Floor Plan', film: 'Architectural Film' };
@@ -205,7 +206,8 @@ function initWall() {
   if (prefersReducedMotion) return;
   document.querySelectorAll('[data-wall-col]').forEach((col) => {
     const dir = Number(col.dataset.wallCol);
-    gsap.fromTo(col, { yPercent: dir * -6 }, { yPercent: dir * 10, ease: 'none', scrollTrigger: { trigger: col.closest('section'), start: 'top top', end: 'bottom top', scrub: true } });
+    const hero = col.closest('[data-hero]');
+    gsap.fromTo(col, { yPercent: dir * -6 }, { yPercent: dir * 10, ease: 'none', scrollTrigger: { start: 0, end: heroCoverEnd(hero), scrub: true, invalidateOnRefresh: true } });
   });
 }
 

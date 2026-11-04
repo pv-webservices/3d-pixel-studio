@@ -1,5 +1,6 @@
 import { ScrollTrigger, initSmoothScroll } from './core/motion.js';
 import { initChrome, runEntrance } from './core/chrome.js';
+import { initLayers } from './core/layers.js';
 import { initReveals } from './fx/reveals.js';
 import { initHero, initPageHero } from './modules/hero.js';
 import { initHorizontal, initPartner, initStack, initStepIn } from './modules/scenes.js';
@@ -9,6 +10,7 @@ const page = document.body.dataset.page;
 
 // Page-specific modules are code-split so each page only loads what it uses.
 const pageModules = {
+  home: () => import('./pages/home.js'),
   work: () => import('./pages/work.js'),
   services: () => import('./pages/services.js'),
   studio: () => import('./pages/studio.js'),
@@ -21,6 +23,7 @@ async function boot() {
   const ready = runEntrance();
   await (document.fonts?.ready ?? Promise.resolve());
 
+  initLayers();
   initChrome();
   initHero();
   initPageHero(ready);

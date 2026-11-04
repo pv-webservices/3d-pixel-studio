@@ -1,5 +1,6 @@
 // Declarative scroll effects driven by data-attributes, so pages stay plain HTML.
 import { gsap, ScrollTrigger, SplitText, prefersReducedMotion } from '../core/motion.js';
+import { footerRevealStart, getFooter } from '../core/layers.js';
 
 const inHero = (el) => Boolean(el.closest('[data-hero]'));
 
@@ -151,13 +152,15 @@ function marquees() {
 
 function footer() {
   const mega = document.querySelector('[data-footer-mega]');
-  if (!mega || prefersReducedMotion) return;
-  gsap.from(mega.querySelectorAll('span'), {
-    yPercent: 125,
-    duration: 1.4,
-    stagger: 0.12,
-    ease: 'expo.out',
-    scrollTrigger: { trigger: mega, start: 'top 95%', once: true },
+  const footerEl = getFooter();
+  if (!mega || !footerEl || prefersReducedMotion) return;
+  // The footer is sticky beneath the page, so the lockup rises in once the page edge uncovers it.
+  const rise = gsap.from(mega.children, { yPercent: 115, duration: 1.4, stagger: 0.1, ease: 'expo.out', paused: true });
+  ScrollTrigger.create({
+    start: footerRevealStart(footerEl, mega, mega.offsetHeight * 0.3),
+    invalidateOnRefresh: true,
+    once: true,
+    onEnter: () => rise.play(),
   });
 
   const ctaMedia = document.querySelector('[data-cta-media] img');

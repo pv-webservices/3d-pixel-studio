@@ -361,6 +361,52 @@ ol {
   gap: var(--gutter);
 }
 
+/* --------------------------------------------------------------------------
+   Scroll layering (src/js/core/layers.js)
+   The hero holds still while the next section slides over it; the footer sits underneath the page
+   and is uncovered as the content moves away. --hero-stick / --footer-stick are 0 unless the hero or
+   footer is taller than the screen, in which case it scrolls until its far edge is visible, then holds.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  main {
+    position: relative;
+    z-index: 1;
+    background: var(--ivory);
+  }
+  main > [data-hero] {
+    position: sticky;
+    top: var(--hero-stick, 0px);
+    z-index: 0;
+  }
+  /* :where() keeps this at element specificity, so sections that set their own background/position win. */
+  main > :where(:not([data-hero])) {
+    position: relative;
+    z-index: 1;
+    background-color: var(--ivory);
+  }
+  /* The covering section arrives with a soft rounded edge and shadow, like a sheet laid over the hero. */
+  main > [data-hero] + :not(.filters) {
+    border-radius: var(--cover-radius) var(--cover-radius) 0 0;
+    box-shadow: 0 -28px 60px -30px rgba(var(--graphite-rgb), 0.45);
+  }
+  main ~ .footer {
+    position: sticky;
+    bottom: var(--footer-stick, 0px);
+    z-index: 0;
+  }
+}
+:root {
+  --cover-radius: clamp(14px, 1.8vw, 28px);
+}
+.hero-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: var(--graphite);
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Media helpers */
 .media {
   position: relative;
