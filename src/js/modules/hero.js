@@ -1,6 +1,7 @@
 import { gsap, prefersReducedMotion, scrollTo } from '../core/motion.js';
+import { heroCoverEnd } from '../core/layers.js';
 
-/** Inner-page heroes: slow settle on entry, parallax on scroll. */
+/** Inner-page heroes: slow settle on entry, then a gentle push-in while the page covers the hero. */
 export function initPageHero(ready) {
   const hero = document.querySelector('.page-hero, .studio-hero');
   if (!hero || prefersReducedMotion) return;
@@ -8,18 +9,17 @@ export function initPageHero(ready) {
   if (media) {
     gsap.set(media, { scale: 1.18 });
     ready.then(() => gsap.to(media, { scale: 1.04, duration: 2.6, ease: 'expo.out' }));
-    gsap.to(media, { yPercent: 14, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+    const wrap = hero.querySelector('[data-page-hero-media]');
+    gsap.fromTo(wrap, { scale: 1 }, { scale: 1.06, ease: 'none', scrollTrigger: { start: 0, end: heroCoverEnd(hero), scrub: true, invalidateOnRefresh: true } });
   }
 }
 
-/** Video hero: playback progress line, cinematic "frame-in" as it scrolls away. */
+/** Video hero: playback progress line and a slow push-in while the page covers it (see core/layers.js). */
 export function initHero() {
   const hero = document.querySelector('.hero');
   if (!hero) return;
   const video = hero.querySelector('[data-hero-video]');
   const progress = hero.querySelector('[data-hero-progress]');
-  const frame = hero.querySelector('[data-hero-frame]');
-  const content = hero.querySelector('[data-hero-content]');
 
   if (video && progress) {
     video.addEventListener('timeupdate', () => {
@@ -32,10 +32,6 @@ export function initHero() {
 
   if (prefersReducedMotion) return;
   gsap.to(video, { scale: 1, duration: 2.6, ease: 'expo.out' });
-
-  gsap
-    .timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
-    .to(frame, { clipPath: 'inset(4% 3% 10% 3% round 14px)', ease: 'none' }, 0)
-    .to(content, { yPercent: -18, opacity: 0, ease: 'none' }, 0)
-    .to(video, { yPercent: 12, ease: 'none' }, 0);
+  const frame = hero.querySelector('[data-hero-frame]');
+  gsap.fromTo(frame, { scale: 1 }, { scale: 1.06, ease: 'none', scrollTrigger: { start: 0, end: heroCoverEnd(hero), scrub: true, invalidateOnRefresh: true } });
 }

@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../core/motion.js';
+import { heroCoverEnd } from '../core/layers.js';
 
 /** Pinned principles: scroll progress picks the active word + image (desktop), or the step in view (mobile). */
 function initSteps() {
@@ -53,7 +54,7 @@ function initProcess() {
 function initWord() {
   const word = document.querySelector('[data-studio-word]');
   if (!word || prefersReducedMotion) return;
-  gsap.fromTo(word, { backgroundPosition: 'center 20%' }, { backgroundPosition: 'center 80%', ease: 'none', scrollTrigger: { trigger: word, start: 'top top', end: 'bottom top', scrub: true } });
+  gsap.fromTo(word, { backgroundPosition: 'center 20%' }, { backgroundPosition: 'center 80%', ease: 'none', scrollTrigger: { start: 0, end: heroCoverEnd(word.closest('[data-hero]')), scrub: true, invalidateOnRefresh: true } });
   gsap.from(word, { yPercent: 30, opacity: 0, letterSpacing: '0.05em', duration: 2, ease: 'expo.out', delay: 0.2 });
 }
 

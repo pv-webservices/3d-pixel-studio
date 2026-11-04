@@ -68,7 +68,7 @@ export function init() {
       if (!res.ok) throw new Error(`Status ${res.status}`);
       form.reset();
       fileList.textContent = '';
-      status.textContent = 'Thank you — fast, structured response within 12–24 hours.';
+      status.textContent = 'Thank you — fast, reliable responses to project enquiries.';
     } catch {
       status.dataset.state = 'error';
       status.innerHTML = 'Could not send right now. Please <a href="mailto:contact@3dpixelstudio.com" style="text-decoration:underline">email us</a> or <a href="https://wa.me/919769595024" target="_blank" rel="noopener" style="text-decoration:underline">Discuss On Whatsapp</a>.';

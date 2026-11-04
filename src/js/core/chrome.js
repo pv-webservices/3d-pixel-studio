@@ -1,5 +1,6 @@
 // Site chrome shared by every page: preloader, page transitions, header, menu, cursor, magnetic buttons.
 import { gsap, ScrollTrigger, isTouch, prefersReducedMotion, scrollTo, startScroll, stopScroll } from './motion.js';
+import { footerRevealStart, getFooter } from './layers.js';
 
 const root = document.documentElement;
 const TRANSITION_KEY = '3dps-transition';
@@ -148,11 +149,14 @@ function initHeader() {
   // Switch header tint while a dark section sits underneath it.
   const darkSections = document.querySelectorAll('[data-header-dark]');
   let activeDark = 0;
+  const HEADER_LINE = 40;
   darkSections.forEach((section) => {
+    // A sticky hero reports its stuck position, so it gets explicit offsets: dark until it is covered.
+    const range = section.matches('[data-hero]')
+      ? { start: 0, end: () => section.offsetHeight - HEADER_LINE }
+      : { trigger: section, start: `top top+=${HEADER_LINE}`, end: `bottom top+=${HEADER_LINE}` };
     ScrollTrigger.create({
-      trigger: section,
-      start: 'top top+=40',
-      end: 'bottom top+=40',
+      ...range,
       onToggle: (self) => {
         activeDark += self.isActive ? 1 : -1;
         header.classList.toggle('is-on-dark', activeDark > 0);
@@ -162,7 +166,15 @@ function initHeader() {
 
   const wa = document.querySelector('[data-float-wa]');
   if (wa) {
-    ScrollTrigger.create({ start: () => window.innerHeight * 0.8, onToggle: (self) => wa.classList.toggle('is-visible', self.isActive) });
+    // Shown after the hero, tucked away again once the footer's bottom row (with "Back to top") is uncovered.
+    const footer = getFooter();
+    const bottomRow = footer?.querySelector('.footer__bottom');
+    ScrollTrigger.create({
+      start: () => window.innerHeight * 0.8,
+      end: bottomRow ? footerRevealStart(footer, bottomRow, 40) : 'max',
+      invalidateOnRefresh: true,
+      onToggle: (self) => wa.classList.toggle('is-visible', self.isActive),
+    });
   }
   // Same-page anchors glide through Lenis and clear the fixed header.
   document.addEventListener('click', (e) => {

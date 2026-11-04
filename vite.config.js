@@ -52,6 +52,8 @@ const pages = {
   services: 'services/index.html',
   insights: 'insights/index.html',
   article: 'insights/why-interior-cgi-is-a-game-changer-for-modern-designers/index.html',
+  articleExterior: 'insights/how-exterior-cgi-supports-planning-approvals-and-pre-sales/index.html',
+  articleFilms: 'insights/why-architectural-films-help-buyers-understand-a-project/index.html',
   review: 'project-review/index.html',
 };
 
