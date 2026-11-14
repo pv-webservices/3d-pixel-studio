@@ -102,6 +102,27 @@
   font-size: 0.7rem;
 }
 
+/* Phones: tighten long labels so they fit on one line; if a screen is still too narrow,
+   the label wraps inside the pill instead of being clipped. */
+@media (max-width: 600px) {
+  .btn {
+    max-width: 100%;
+    gap: 0.7rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    white-space: normal;
+    text-align: center;
+  }
+  .btn--sm {
+    padding: 0.6rem 1.1rem;
+    font-size: 0.7rem;
+  }
+  .btn__text {
+    min-width: 0;
+  }
+}
+
 .link-arrow {
   display: inline-flex;
   /* As a grid item it would stretch to the column width; keep the underline to the text + arrow. */
@@ -447,6 +468,39 @@
   display: block;
   color: var(--gold);
   margin-bottom: 0.5rem;
+}
+/* Social links: text on larger screens, round icon buttons in the phone drawer. */
+.menu__social {
+  display: none;
+  gap: 0.7rem;
+  margin-top: 0.3rem;
+}
+.menu__social a {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--ivory);
+  box-shadow: inset 0 0 0 1px var(--line-light);
+  transition: background-color 0.4s, color 0.4s, box-shadow 0.4s;
+}
+.menu__meta .menu__social a:hover {
+  background: var(--gold);
+  color: var(--emerald);
+  box-shadow: none;
+}
+.menu__social svg {
+  width: 18px;
+  height: 18px;
+}
+@media (max-width: 767px) {
+  .menu__social-text {
+    display: none;
+  }
+  .menu__social {
+    display: flex;
+  }
 }
 @media (min-width: 1080px) {
   .menu__inner {
