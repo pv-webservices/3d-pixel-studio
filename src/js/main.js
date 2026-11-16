@@ -18,10 +18,20 @@ const pageModules = {
   review: () => import('./pages/review.js'),
 };
 
+// Pages with runtime (admin-managed) content render it before the scroll scenes measure the layout.
+// A slow API must not hold the page hostage: after this wait the scenes start anyway, and the page
+// module re-measures (ScrollTrigger.refresh) when its content arrives.
+const CONTENT_WAIT_MS = 3500;
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function boot() {
   initSmoothScroll();
   const ready = runEntrance();
+  const loader = pageModules[page];
+  const modPromise = loader ? loader() : null;
+  const contentReady = modPromise ? modPromise.then((mod) => mod.prepare?.()).catch(() => {}) : null;
   await (document.fonts?.ready ?? Promise.resolve());
+  if (contentReady) await Promise.race([contentReady, delay(CONTENT_WAIT_MS)]);
 
   initLayers();
   initChrome();
@@ -36,9 +46,8 @@ async function boot() {
   initFilms();
   initAccordions();
 
-  const loader = pageModules[page];
-  if (loader) {
-    const mod = await loader();
+  if (modPromise) {
+    const mod = await modPromise;
     await mod.init?.(ready);
   }
 

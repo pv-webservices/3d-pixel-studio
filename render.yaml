@@ -1,0 +1,38 @@
+# Render Blueprint for the admin/content API only (the public website stays on its current static host).
+# Not yet applied to any Render account: review plan, region and names before creating it.
+# A persistent disk requires a paid instance type, a single instance, and brief downtime on each deploy
+# (Render stops the old instance before starting the new one). See server/README.md → "Deploying to Render".
+services:
+  - type: web
+    name: 3dps-content-api
+    runtime: node
+    rootDir: server
+    plan: starter
+    region: singapore
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "24"
+      - key: DATA_DIR
+        value: /var/data
+      - key: TRUST_PROXY
+        value: "1"
+      - key: PUBLIC_CACHE_SECONDS
+        value: "60"
+      # Public HTTPS URL of this service, e.g. https://3dps-content-api.onrender.com or a custom domain.
+      - key: API_PUBLIC_URL
+        sync: false
+      # Public website origin, e.g. https://www.example.com (no trailing slash).
+      - key: SITE_URL
+        sync: false
+      # Comma-separated website origins allowed to read /api/public/* (usually the same as SITE_URL).
+      - key: CORS_ORIGINS
+        sync: false
+    disk:
+      name: content-data
+      mountPath: /var/data
+      sizeGB: 5

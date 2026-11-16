@@ -7,6 +7,7 @@ import path from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import sharp from 'sharp';
+import { PROJECTS } from './media-projects.mjs';
 
 const run = promisify(execFile);
 const ROOT = path.resolve(import.meta.dirname, '..');
@@ -19,42 +20,6 @@ const SOURCES = [
   { dir: 'Architecture Cgi', cat: 'exterior', out: 'exterior' },
   { dir: 'Interior cgi', cat: 'interior', out: 'interior' },
   { dir: 'Isometric', cat: 'plan', out: 'plans' },
-];
-
-// Project prefix → display name + location (derived from the supplied filenames).
-const PROJECTS = [
-  ['abhyudaya-celestial', 'Abhyudaya Celestial', 'Lucknow'],
-  ['ace-atlantis', 'Ace Atlantis', 'Thane'],
-  ['applaud-38', 'Applaud 38', 'Goregaon, Mumbai'],
-  ['bhoomi-lakescape', 'Bhoomi Lakescape', 'Thane'],
-  ['geecee-evana', 'GeeCee Evana', 'Bandra, Mumbai'],
-  ['godrej-rejuve', 'Godrej Rejuve', 'Pune'],
-  ['indapur', 'Indapur Bungalow', 'Indapur'],
-  ['jeet-rivera', 'Jeet Rivera', 'Varanasi'],
-  ['lavik-shanthi', 'Lavik Shanthi', 'Coimbatore'],
-  ['lm-wind-power', 'LM Wind Power', 'Industrial Facility'],
-  ['mirador-prangan', 'Mirador Prangan', 'Atgaon, Thane'],
-  ['modern-waterfront', 'Waterfront Bridge', 'Maharashtra'],
-  ['river-crossing', 'River Crossing', 'Maharashtra'],
-  ['premium-mid-rise-hotel', 'Hillside Hotel', 'Shillong'],
-  ['premium-religious', 'Religious Architecture', 'India'],
-  ['temple', 'Temple Architecture', 'India'],
-  ['puri-greens-2', 'Puri Greens 2', 'Gurgaon'],
-  ['sarika', 'Sarika', 'Thane'],
-  ['savvy-swaraj', 'Savvy Swaraj Sports Academy', 'Ahmedabad'],
-  ['shapoorji-pallonji-golfland', 'Shapoorji Pallonji Golfland', 'Pune'],
-  ['shubh-kamna-heights', 'Shubh Kamna Heights', 'Varanasi'],
-  ['sunbeam-heights', 'Sunbeam Heights', 'Andheri, Mumbai'],
-  ['tata-adwita', 'Tata Adwita', 'Kolkata'],
-  ['the-empire', 'The Empire', 'Nashik'],
-  ['unique-shubharambh', 'Unique Shubharambh', 'Mira Road'],
-  ['lodha-villa-royale-gold', 'Lodha Villa Royale', 'Thane'],
-  ['lonavala', 'Lonavala Villa', 'Lonavala'],
-  ['london', 'London Residence', 'London'],
-  ['mgm-hospital', 'MGM Hospital', 'Mumbai'],
-  ['moksha-at-avas', 'Moksha at Avas', 'Alibaug'],
-  ['oberoi-360-tower', 'Oberoi 360 Tower', 'Mumbai'],
-  ['radio-mirchi', 'Radio Mirchi', 'Mumbai'],
 ];
 
 const slugify = (name) =>

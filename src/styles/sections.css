@@ -893,6 +893,38 @@
   .films__side {
     grid-template-columns: 1fr 1fr;
   }
+  /* Fewer homepage selections than the 1 + 4 design: let the remaining cards use the full width. */
+  .films__grid--no-feature,
+  .films__grid--feature-only {
+    grid-template-columns: 1fr;
+  }
+  .films__grid--no-feature .films__side {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+/* Loading / unavailable notes for runtime-loaded sections. */
+.works__progress[hidden],
+.films__grid[hidden],
+.gallery__status[hidden],
+.content-status[hidden] {
+  display: none;
+}
+.works__status {
+  margin-top: 1rem;
+}
+.content-status {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--muted);
+  max-width: 46ch;
+}
+.is-dark .content-status {
+  color: var(--muted-light);
+}
+.films .content-status {
+  margin-top: 1rem;
+  max-width: none;
 }
 
 /* ---------- Clients ---------- */

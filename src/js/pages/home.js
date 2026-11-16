@@ -1,25 +1,51 @@
-// Home: "Selected Work" cards open a project pop-up (gallery + details) instead of leaving the page.
-// Cards stay real links to the portfolio, so they still work before this module loads.
-import { gsap, prefersReducedMotion, startScroll, stopScroll } from '../core/motion.js';
-import MEDIA from '../../data/media.json';
-import { PROJECTS } from '../data/projects.js';
+// Home: Selected Work and Architectural Films are loaded from the admin API at runtime. "Selected Work"
+// cards open a project pop-up (gallery + details); they stay real links to the portfolio as a fallback.
+import { gsap, ScrollTrigger, prefersReducedMotion, startScroll, stopScroll } from '../core/motion.js';
+import { bindYouTubeFallback, escapeHtml, fetchPublic, pad, pick, srcset } from '../content/client.js';
+import { renderFilms, renderSelectedWork } from '../content/home-sections.js';
 
-const MAX_IMAGES = 12;
 const SWIPE_PX = 50;
 const CLOSE_MS = 450;
-const CATEGORY = { exterior: 'Exterior', interior: 'Interior', plan: 'Floor plan' };
-
-const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const srcset = (m) => m.sizes.map((w) => `${m.src}-${w}.webp ${w}w`).join(', ');
-const pick = (m, max) => `${m.src}-${m.sizes.filter((w) => w <= max).at(-1) ?? m.sizes[0]}.webp`;
-const pad = (n) => String(n).padStart(2, '0');
+const CATEGORY = { exterior: 'Exterior', interior: 'Interior' };
 const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
-/** Project images, with the render shown on the card first. */
-function imagesFor(project, leadId) {
-  const all = MEDIA.filter((m) => m.id.startsWith(`${project.prefix}-`));
-  const lead = all.find((m) => m.id === leadId);
-  return (lead ? [lead, ...all.filter((m) => m !== lead)] : all).slice(0, MAX_IMAGES);
+/** Projects currently rendered in Selected Work, by id, for the pop-up. */
+const projectsById = new Map();
+let initialised = false;
+
+/**
+ * Fetch and render the runtime sections. Called by main.js before the scroll scenes are set up; if the
+ * API is slow, the scenes are set up anyway and this re-measures them once content arrives.
+ * Never rejects: failures render an "unavailable" note instead of broken controls.
+ */
+export function prepare() {
+  const works = document.querySelector('[data-works]');
+  const films = document.querySelector('[data-films-grid]')?.closest('section');
+  if (!works && !films) return Promise.resolve();
+  if (works) renderSelectedWork(works, { projects: null, loading: true });
+  if (films) renderFilms(films, { films: null, loading: true });
+
+  return fetchPublic('home')
+    .then((data) => {
+      if (!Array.isArray(data?.selectedWork) || !data.films) throw new Error('Unexpected content response');
+      return data;
+    })
+    .then(
+      (data) => {
+        projectsById.clear();
+        data.selectedWork.forEach((p) => projectsById.set(p.id, p));
+        if (works) renderSelectedWork(works, { projects: data.selectedWork });
+        if (films) renderFilms(films, { films: data.films });
+      },
+      () => {
+        if (works) renderSelectedWork(works, { projects: [], error: true });
+        if (films) renderFilms(films, { films: null, error: true });
+      },
+    )
+    .then(() => {
+      if (films) bindYouTubeFallback(films);
+      if (initialised) ScrollTrigger.refresh();
+    });
 }
 
 function modalMarkup() {
@@ -46,30 +72,31 @@ function modalMarkup() {
 function infoMarkup(project, images, number) {
   const cats = [...new Set(images.map((m) => CATEGORY[m.cat]).filter(Boolean))].join(' & ');
   const film = project.film
-    ? `<button type="button" class="btn btn--gold" data-film="${project.film}" data-film-title="${escapeHtml(project.name)} — 3D Walkthrough" data-pm-film>
+    ? `<button type="button" class="btn btn--gold" data-film="${escapeHtml(project.film.youtubeId)}" data-film-title="${escapeHtml(project.film.title)}" data-pm-film>
         <span class="btn__text"><span>Play the film</span><span aria-hidden="true">Play the film</span></span>
         <svg class="btn__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>`
     : '';
+  const summary = project.description ? `<p class="pmodal__summary">${escapeHtml(project.description)}</p>` : '';
+  const scope = project.scope?.length ? `<div class="pmodal__scope"><span class="label">Scope</span><ul>${project.scope.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul></div>` : '';
   return `<p class="pmodal__eyebrow"><span class="index">${number}</span><span class="label">${escapeHtml(project.discipline)}</span></p>
     <h2 class="h2 pmodal__title" id="pm-title">${escapeHtml(project.name)}</h2>
     <p class="pmodal__loc loc"><svg class="loc__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>${escapeHtml(project.location)}</p>
-    <p class="pmodal__summary">${escapeHtml(project.summary)}</p>
+    ${summary}
     <dl class="pmodal__facts">
       <div><dt class="label">Discipline</dt><dd>${escapeHtml(project.discipline)}</dd></div>
       <div><dt class="label">Views shown</dt><dd>${images.length} ${cats ? `${escapeHtml(cats.toLowerCase())} ` : ''}renders</dd></div>
     </dl>
-    <div class="pmodal__scope"><span class="label">Scope</span><ul>${project.scope.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul></div>
+    ${scope}
     <div class="pmodal__actions">
       ${film}
-      <a href="/work/?filter=${project.filter}" class="btn${project.film ? ' btn--ghost' : ''}">
+      <a href="/work/?filter=${escapeHtml(project.category)}" class="btn${project.film ? ' btn--ghost' : ''}">
         <span class="btn__text"><span>View in portfolio</span><span aria-hidden="true">View in portfolio</span></span>${ARROW}</a>
       <a href="/project-review/" class="link-arrow">Request a project review ${ARROW}</a>
     </div>`;
 }
 
 function initProjectModal() {
-  const cards = [...document.querySelectorAll('[data-project]')];
-  if (!cards.length) return;
+  if (!document.querySelector('[data-works]')) return;
   document.body.insertAdjacentHTML('beforeend', modalMarkup());
   const box = document.querySelector('[data-pmodal]');
   const panel = box.querySelector('[data-pm-panel]');
@@ -100,23 +127,26 @@ function initProjectModal() {
   };
 
   const open = (card) => {
-    const project = PROJECTS[card.dataset.project];
-    if (!project) return false;
+    const project = projectsById.get(card.dataset.project);
+    if (!project?.gallery?.length) return false;
     state.opener = card;
-    state.images = imagesFor(project, card.dataset.projectLead);
+    state.images = project.gallery;
     const number = card.querySelector('.work-card__num')?.textContent ?? '';
     info.innerHTML = infoMarkup(project, state.images, number);
     totalEl.textContent = pad(state.images.length);
     thumbs.innerHTML = state.images
-      .map((m, j) => `<li><button type="button" data-pm-thumb="${j}" aria-label="Show image ${j + 1}: ${escapeHtml(m.alt)}"><img src="${pick(m, 640)}" alt="" loading="lazy" width="${m.w}" height="${m.h}" /></button></li>`)
+      .map((m, j) => `<li><button type="button" data-pm-thumb="${j}" aria-label="Show image ${j + 1}: ${escapeHtml(m.alt)}"><img src="${escapeHtml(pick(m, 640))}" alt="" loading="lazy" width="${m.w}" height="${m.h}" /></button></li>`)
       .join('');
     box.classList.toggle('is-single', state.images.length < 2);
     show(0);
     box.hidden = false;
     panel.scrollTop = 0;
-    requestAnimationFrame(() => box.classList.add('is-open'));
     stopScroll();
-    box.querySelector('.pmodal__close').focus({ preventScroll: true });
+    // Focus once the dialog is visible: a visibility:hidden element cannot take focus.
+    requestAnimationFrame(() => {
+      box.classList.add('is-open');
+      box.querySelector('.pmodal__close').focus({ preventScroll: true });
+    });
     return true;
   };
 
@@ -128,12 +158,12 @@ function initProjectModal() {
     state.opener?.focus({ preventScroll: true });
   };
 
-  cards.forEach((card) =>
-    card.addEventListener('click', (e) => {
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-      if (open(card)) e.preventDefault();
-    }),
-  );
+  // Delegated, so cards rendered after this runs (slow API) open the pop-up too.
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('[data-project]');
+    if (!card || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    if (open(card)) e.preventDefault();
+  });
   box.querySelectorAll('[data-pm-close]').forEach((el) => el.addEventListener('click', close));
   box.querySelector('[data-pm-prev]').addEventListener('click', () => show(state.index - 1, -1));
   box.querySelector('[data-pm-next]').addEventListener('click', () => show(state.index + 1, 1));
@@ -178,4 +208,5 @@ function trapFocus(e, container) {
 
 export function init() {
   initProjectModal();
+  initialised = true;
 }
