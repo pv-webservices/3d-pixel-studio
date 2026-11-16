@@ -1,0 +1,26 @@
+{
+  "name": "3d-pixel-studio-api",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Content API and admin panel for the 3d Pixel Studio website (projects, films, homepage selections).",
+  "type": "module",
+  "engines": {
+    "node": ">=24.15 <25"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning src/index.js",
+    "dev": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env src/index.js",
+    "migrate": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env scripts/migrate.mjs",
+    "admin:create": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env scripts/create-admin.mjs",
+    "import": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env scripts/import-content.mjs",
+    "backup": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env scripts/backup.mjs",
+    "test": "node --test --test-concurrency=1 \"test/**/*.test.js\""
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "helmet": "^8.3.0",
+    "multer": "^2.5.0",
+    "sharp": "^0.35.5",
+    "zod": "^4.6.7"
+  }
+}

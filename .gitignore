@@ -1,2 +1,8 @@
 node_modules
 dist
+.tmp-*
+# Admin API runtime data (database, uploads, backups) and secrets
+server/data
+server/.env
+.env
+.env.local

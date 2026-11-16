@@ -1,3 +1,8 @@
+// Snapshot of the content that was hardcoded in the website before the admin panel existed
+// (src/js/data/projects.js, src/js/data/films.js and the homepage cards in index.html at commit 8326719).
+// It is the source for scripts/import-content.mjs, so the import stays repeatable after those files were
+// replaced by runtime API content. Do not edit this to change live content; use the admin panel.
+
 // Featured projects on the home page "Selected Work" carousel. Images are pulled from the media
 // manifest by id prefix, so new renders for a project appear in its pop-up automatically.
 /**
@@ -13,7 +18,7 @@
  */
 
 /** @type {Record<string, Project>} */
-export const PROJECTS = {
+export const LEGACY_PROJECTS = {
   'oberoi-360-tower': {
     prefix: 'oberoi-360-tower',
     name: 'Oberoi 360 Tower',
@@ -95,4 +100,32 @@ export const PROJECTS = {
       'A full exterior and interior package for a residential tower — elevations, arrival and retail frontage, rooftop and terrace amenities, the entrance lobby and furnished show apartments.',
     scope: ['Elevations & arrival', 'Lobby & amenities', 'Show apartments'],
   },
+};
+
+export const LEGACY_FILMS = [
+  { id: '4MpmzYg59g0', project: 'Shubh Kamna Heights', location: 'Pt. Deen Dayal Upadhyaya Nagar, U.P.', type: '3D Walkthrough' },
+  { id: '6qBQmVbrGW8', project: 'Arham Residential Building', location: 'Mumbai', type: '3D Walkthrough' },
+  { id: 'V5Gm-LI3OAE', project: 'White House', location: 'Subhash Nagar, Chembur, Mumbai', type: '3D Walkthrough' },
+  { id: 'llQMhMIu8qg', project: 'Azim Park', location: 'Navi Mumbai', type: '3D Walkthrough' },
+  { id: 'FQlNyGNGfpw', project: 'Balaji Estate Phase 2', location: 'Dombivali East', type: '3D Walkthrough' },
+];
+
+
+// Homepage as it was hardcoded in index.html. `lead` is the render each Selected Work card showed.
+// The third card (Shubh Kamna Heights) was a film card (play chip, "Architectural Film" label, linked to the
+// film filter). Per the agreed rule that Selected Work shows still renders only, it is listed separately and
+// is NOT seeded into Selected Work; the project itself is still imported and its film is featured below.
+export const LEGACY_HOMEPAGE = {
+  selectedWork: [
+    { project: 'oberoi-360-tower', lead: 'oberoi-360-tower-grand-piano-lounge-sea-view-interior-mumbai' },
+    { project: 'abhyudaya-celestial', lead: 'abhyudaya-celestial-premium-high-rise-facade-dusk-lucknow' },
+    { project: 'lodha-villa-royale-gold', lead: 'lodha-villa-royale-gold-premium-rattan-panel-bedroom-thane' },
+    { project: 'mirador-prangan', lead: 'mirador-prangan-luxury-clubhouse-pool-deck-render-atgaon-thane' },
+    { project: 'moksha-at-avas', lead: 'moksha-at-avas-bohemian-living-room-antler-chandelier-alibaugh' },
+    { project: 'geecee-evana', lead: 'geecee-evana-modern-glass-facade-residential-building-mumbai' },
+    { project: 'applaud-38', lead: 'applaud-38-grand-entrance-lobby-interior-goregaon' },
+  ],
+  excludedFilmCards: [{ project: 'shubh-kamna-heights', lead: 'shubh-kamna-heights-illuminated-aerial-masterplan-night-chandauli' }],
+  featuredFilm: '4MpmzYg59g0',
+  secondaryFilms: ['6qBQmVbrGW8', 'V5Gm-LI3OAE', 'llQMhMIu8qg', 'FQlNyGNGfpw'],
 };

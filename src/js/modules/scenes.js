@@ -74,15 +74,17 @@ export function initHorizontal() {
   const track = section.querySelector('[data-works-track]');
   const bar = section.querySelector('[data-works-bar]');
   const current = section.querySelector('[data-works-current]');
-  const cards = [...track.querySelectorAll('.work-card:not(.work-card--end)')];
+  // Cards are rendered from the admin API, so their count is read live rather than captured once.
+  const getCards = () => [...track.querySelectorAll('.work-card:not(.work-card--end)')];
 
   const setProgress = (p) => {
     gsap.set(bar, { scaleX: p });
-    if (current) current.textContent = String(Math.min(cards.length, Math.floor(p * cards.length) + 1)).padStart(2, '0');
+    const count = getCards().length;
+    if (current) current.textContent = String(Math.min(count, Math.floor(p * count) + 1)).padStart(2, '0');
   };
 
   media.add(PIN_GALLERY, () => {
-    const distance = () => track.scrollWidth - window.innerWidth;
+    const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
     const tween = gsap.to(track, {
       x: () => -distance(),
       ease: 'none',
@@ -97,7 +99,7 @@ export function initHorizontal() {
         onUpdate: (self) => setProgress(self.progress),
       },
     });
-    cards.forEach((card) => {
+    getCards().forEach((card) => {
       const img = card.querySelector('img');
       gsap.fromTo(img, { xPercent: -6 }, { xPercent: 6, ease: 'none', scrollTrigger: { trigger: card, containerAnimation: tween, start: 'left right', end: 'right left', scrub: true } });
     });

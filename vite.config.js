@@ -57,6 +57,10 @@ const pages = {
   review: 'project-review/index.html',
 };
 
+// Local development: /api requests go to the admin API (server/), so the site and API share an origin
+// and no CORS is needed. Production uses VITE_API_URL or a host-level proxy; see README.
+const API_PROXY = { '/api': { target: process.env.API_PROXY_TARGET || 'http://localhost:8787', changeOrigin: true } };
+
 export default defineConfig({
   appType: 'mpa',
   publicDir: 'static',
@@ -68,5 +72,6 @@ export default defineConfig({
       input: Object.fromEntries(Object.entries(pages).map(([k, v]) => [k, resolve(root, v)])),
     },
   },
-  server: { port: 5173, host: true },
+  server: { port: 5173, host: true, proxy: API_PROXY },
+  preview: { proxy: API_PROXY },
 });
